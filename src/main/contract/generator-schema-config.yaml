@@ -1,0 +1,15 @@
+hideGenerationTimestamp: true
+openApiNullable: false
+documentationProvider: none
+annotationLibrary: none
+useJakartaEe: true
+dateLibrary: java8
+library: native
+serializableModel: false
+serializationLibrary: jackson
+modelNameSuffix: Dto
+modelPackage: '@adapter.primary.package@.model'
+additionalModelTypeAnnotations: "@lombok.experimental.SuperBuilder(toBuilder = true)"
+useBeanValidation: true
+# fullJavaUtil: false
+legacyDiscriminatorBehavior: false

@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: Library REST API
+  description: Example about REST in Spring boot
+  version: 1.0.1
+servers:
+  - url: http://localhost:8080
+    description: Optional server description, e.g. Internal staging server for testing
+tags:
+  - name: book-management
+    description: Operations related to books.
+paths:
+  /books:
+    post:
+      summary: Register a new book in the library.
+      description: Register a new book in the library.
+      tags:
+        - book-management
+      operationId: create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+      responses:
+        '201':    # status code
+          description: The book gets registered in the library.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookOutput"
+          headers:
+            Location:
+              description: The URI of the registered book
+              schema:
+                type: string
+    get:
+      summary: Get an array of book that match the criteria.
+      description: Get an array of book that match the criteria.
+      tags:
+        - book-management
+      operationId: getByCriteria
+      parameters:
+        - in: query
+          name: queryParams
+          description: Query parameters
+          schema:
+            $ref: "#/components/schemas/BookQueryParams"
+          explode: true
+      responses:
+        '200':    # status code
+          description: Returns a list of books that met the given criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookOutput"
+  /books/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Book id
+    get:
+      summary: Get book by ID.
+      description: Get book by ID.
+      tags:
+        - book-management
+      operationId: getById
+      responses:
+        '200':    # status code
+          description: A JSON representation of a book.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/BookOutput'
+    put:
+      summary: Update an existing book.
+      description: Update an existing book.
+      tags:
+        - book-management
+      operationId: updateOrCreate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookInput"
+      responses:
+        '201':    # status code
+          description: The book gets registered in the library.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookOutput"
+          headers:
+            Location:
+              description: The URI of the registered book
+              schema:
+                type: string
+        '204':    # status code
+          description: Book info gets updated.
+    delete:
+      summary: Delete an existing book.
+      description: Delete an existing book.
+      tags:
+        - book-management
+      operationId: delete
+      responses:
+        '204':    # status code
+          description: The book gets deleted from the repository.
+        '404':
+          description: The book with given ID does not exist.
+components:
+  schemas:
+    BookBase:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        publisher:
+          type: string
+        yearPublished:
+          type: integer
+    BookInput:
+      allOf: 
+        - $ref: '#/components/schemas/BookBase'
+      type: object
+      required:
+        - title
+        - author
+        - publisher
+    BookOutput:
+      allOf: 
+        - $ref: '#/components/schemas/BookBase'
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - title
+        - author
+        - publisher
+    BookQueryParams:
+      allOf: 
+        - $ref: '#/components/schemas/BookBase'
+      type: object

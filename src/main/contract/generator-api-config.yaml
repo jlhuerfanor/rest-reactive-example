@@ -1,0 +1,15 @@
+hideGenerationTimestamp: true
+openApiNullable: false
+documentationProvider: none
+annotationLibrary: none
+useJakartaEe: true
+dateLibrary: java8
+serializableModel: false
+apiPackage: '@adapter.primary.package@.rest.api'
+modelPackage: '@adapter.primary.package@.model'
+apiNameSuffix: Api
+modelNameSuffix: Dto
+skipDefaultInterface: true
+interfaceOnly: true
+useTags: true
+reactive: true
