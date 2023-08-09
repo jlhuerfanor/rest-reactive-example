@@ -13,3 +13,4 @@ skipDefaultInterface: true
 interfaceOnly: true
 useTags: true
 reactive: true
+hateoas: true

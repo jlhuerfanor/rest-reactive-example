@@ -1,24 +1,187 @@
 openapi: 3.0.0
 info:
-  title: Library REST API
-  description: Example about REST in Spring boot
+  title: Advanced Library REST API
+  description: Example about REST in Spring Reactive
   version: 1.0.1
 servers:
   - url: http://localhost:8080
     description: Optional server description, e.g. Internal staging server for testing
 tags:
+  - name: publisher-management
+    description: Operations related to publishers.
+  - name: author-management
+    description: Operations related to authors.
   - name: book-management
     description: Operations related to books.
 paths:
+  # publishers --------------------------------------------
+  /publisher:
+    post:
+      summary: Register a publisher info.
+      description: Register a publisher info.
+      tags:
+        - publisher-management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublisherInput"
+      responses:
+        '201':    # status code
+          description: The publisher info gets registered.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublisherOutput"
+          headers:
+            Location:
+              description: The URI of the registered publisher info.
+              schema:
+                type: string
+    get:
+      summary: Get an array of registered publishers.
+      description: Get an array of registered publishers.
+      tags:
+        - publisher-management
+      responses:
+        '200':    # status code
+          description: Returns a list of registered publishers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublisherOutput"
+  /publisher/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Publisher id
+    get:
+      summary: Get publisher info by ID.
+      description: Get publisher info by ID.
+      tags:
+        - publisher-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of the publisher info.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/PublisherOutput'
+  /publisher/{id}/books:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Publisher id
+    get:
+      summary: Get books of a given publisher.
+      description: Get books of a given publisher.
+      tags:
+        - publisher-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of the publisher info.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublisherOutput'
+  # Authors    --------------------------------------------
+  /author:
+    post:
+      summary: Register an author info.
+      description: Register an author info.
+      tags:
+        - author-management
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AuthorInput"
+      responses:
+        '201':    # status code
+          description: The author info gets registered.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthorOutput"
+          headers:
+            Location:
+              description: The URI of the registered author info.
+              schema:
+                type: string
+    get:
+      summary: Get an array of registered authors.
+      description: Get an array of registered authors.
+      tags:
+        - author-management
+      responses:
+        '200':    # status code
+          description: Returns a list of registered authors.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuthorOutput"
+  /author/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Author id
+    get:
+      summary: Get author info by ID.
+      description: Get author info by ID.
+      tags:
+        - author-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of the author info.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AuthorOutput'
+  /author/{id}/books:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Author id
+    get:
+      summary: Get books of a given author.
+      description: Get books of a given author.
+      tags:
+        - author-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of the author s book.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorOutput'
+  # Books      --------------------------------------------
   /books:
     post:
       summary: Register a new book in the library.
       description: Register a new book in the library.
       tags:
         - book-management
-      operationId: create
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -40,7 +203,6 @@ paths:
       description: Get an array of book that match the criteria.
       tags:
         - book-management
-      operationId: getByCriteria
       parameters:
         - in: query
           name: queryParams
@@ -70,7 +232,6 @@ paths:
       description: Get book by ID.
       tags:
         - book-management
-      operationId: getById
       responses:
         '200':    # status code
           description: A JSON representation of a book.
@@ -83,9 +244,7 @@ paths:
       description: Update an existing book.
       tags:
         - book-management
-      operationId: updateOrCreate
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -99,7 +258,7 @@ paths:
                 $ref: "#/components/schemas/BookOutput"
           headers:
             Location:
-              description: The URI of the registered book
+              description: The URI of the registered book resource
               schema:
                 type: string
         '204':    # status code
@@ -109,15 +268,145 @@ paths:
       description: Delete an existing book.
       tags:
         - book-management
-      operationId: delete
       responses:
         '204':    # status code
           description: The book gets deleted from the repository.
         '404':
           description: The book with given ID does not exist.
+  /books/{id}/autor:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Book id
+    get:
+      summary: Get author info.
+      description: Get author info.
+      tags:
+        - book-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of a book.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AuthorOutput'
+  /books/{id}/publisher:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: Book id
+    get:
+      summary: Get publisher info.
+      description: Get publisher info.
+      tags:
+        - book-management
+      responses:
+        '200':    # status code
+          description: A JSON representation of a publisher.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/PublisherOutput'
 components:
   schemas:
+    PublisherBase:
+      type: object
+      properties:
+        name:
+          type: string
+        active:
+          type: boolean
+        website:
+          type: string
+          format: uri
+    AuthorBase:
+      type: object
+      properties:
+        name:
+          type: string
+        country:
+          type: string
+        email:
+          type: string
+          format: email
     BookBase:
+      type: object
+      properties:
+        title:
+          type: string
+        authorId:
+          type: string
+        publisherId:
+          type: string
+        yearPublished:
+          type: integer
+    PublisherInput:
+      allOf: 
+        - $ref: '#/components/schemas/PublisherBase'
+      type: object
+      required:
+        - name
+        - active
+        - website
+    AuthorInput:
+      allOf: 
+        - $ref: '#/components/schemas/AuthorBase'
+      type: object
+      required:
+        - name
+        - country
+        - email
+    BookInput:
+      allOf: 
+        - $ref: '#/components/schemas/BookBase'
+      type: object
+      required:
+        - title
+        - authorId
+        - publisherId
+    PublisherOutput:
+      allOf: 
+        - $ref: '#/components/schemas/PublisherBase'
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+        - name
+        - active
+        - website
+    AuthorOutput:
+      allOf: 
+        - $ref: '#/components/schemas/AuthorBase'
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+        - name
+        - country
+        - email
+    BookOutput:
+      allOf: 
+        - $ref: '#/components/schemas/BookBase'
+      type: object
+      properties:
+        id:
+          type: string
+      required:
+        - id
+        - title
+        - authorId
+        - publisherId
+    BookQueryParams:
       type: object
       properties:
         title:
@@ -128,26 +417,3 @@ components:
           type: string
         yearPublished:
           type: integer
-    BookInput:
-      allOf: 
-        - $ref: '#/components/schemas/BookBase'
-      type: object
-      required:
-        - title
-        - author
-        - publisher
-    BookOutput:
-      allOf: 
-        - $ref: '#/components/schemas/BookBase'
-      type: object
-      properties:
-        id:
-          type: string
-      required:
-        - title
-        - author
-        - publisher
-    BookQueryParams:
-      allOf: 
-        - $ref: '#/components/schemas/BookBase'
-      type: object

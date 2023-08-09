@@ -1,10 +1,12 @@
 package com.endava.workshops.restexample.application.adapter.secondary.mongo;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
@@ -23,25 +25,31 @@ public class MongoBookByCriteriaQuery implements BookByCriteriaQuery {
 
     @Override
     public Flux<Book> findAllByCriteria(String title, String author, String publisher, Integer yearPublished) {
-        var query = new Query();
+        var operations = new ArrayList<AggregationOperation>();
         
         if(Objects.nonNull(title) && !title.isBlank()) {
-            query.addCriteria(Criteria.where("title").regex(title));
-        }
-
-        if(Objects.nonNull(author) && !author.isBlank()) {
-            query.addCriteria(Criteria.where("author").regex(title));
-        }
-
-        if(Objects.nonNull(publisher) && !publisher.isBlank()) {
-            query.addCriteria(Criteria.where("publisher").regex(title));
+            operations.add(Aggregation.match(Criteria.where("title").is(title)));
         }
 
         if(Objects.nonNull(yearPublished)) {
-            query.addCriteria(Criteria.where("title").is(yearPublished));
+            operations.add(Aggregation.match(Criteria.where("yearPublished").is(yearPublished)));
         }
 
-        return mongoTemplate.find(query, Book.class);
+        if(Objects.nonNull(author) && !author.isBlank()) {
+            operations.add(Aggregation.lookup("Author", "authorId", "_id", "author"));
+            operations.add(Aggregation.match(new Criteria("author.name").regex(author)));
+        }
+
+        if(Objects.nonNull(publisher) && !publisher.isBlank()) {
+            operations.add(Aggregation.lookup("Publisher", "publisherId", "_id", "publisher"));
+            operations.add(Aggregation.match(new Criteria("publisher.name").regex(author)));
+        }
+
+        operations.add(Aggregation.project(Book.class));
+
+        return mongoTemplate.aggregate(
+            Aggregation.newAggregation(operations), 
+            Book.class, 
+            Book.class);
     }
-    
 }

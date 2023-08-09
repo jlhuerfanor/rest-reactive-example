@@ -1,9 +1,7 @@
 package com.endava.workshops.restexample.application.service;
 
-import java.util.Objects;
+import java.util.function.Predicate;
 
-import org.hglteam.validation.Validation;
-import org.hglteam.validation.ValidationError;
 import org.springframework.stereotype.Service;
 
 import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
@@ -29,11 +27,10 @@ public class BookInventoryService {
 
     public Mono<Book> add(Book book) {
         return Mono.just(book)
-            .map(Validation.<Book>builder()
-                .onProperty(Book::getId, name -> name
-                        .when(Objects::nonNull)
-                        .then(ValidationError.withMessage(InvalidInputException::new, ERROR_ID_SHOULD_NOT_BE_PROVIDED)))
-                ::valid)
+            .flatMap(value -> repository.existsByTitle(value.getTitle())
+                    .filter(Predicate.isEqual(Boolean.FALSE))
+                    .map(any -> value)
+                    .switchIfEmpty(Mono.error(new InvalidInputException("Name already exists"))))
             .flatMap(repository::save);
     }
 

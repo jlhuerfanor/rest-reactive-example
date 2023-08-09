@@ -16,8 +16,8 @@ public class BookInputDtoToEntityConverter
     public Book convert(BookInputDto source) {
         return Book.builder()
                 .title(source.getTitle())
-                .author(source.getAuthor())
-                .publisher(source.getPublisher())
+                .authorId(source.getAuthorId())
+                .publisherId(source.getPublisherId())
                 .yearPublished(source.getYearPublished())
                 .build();
     }

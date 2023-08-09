@@ -14,12 +14,14 @@ public class BookToOutputDtoConverter
     @Override
     @Nullable
     public BookOutputDto convert(Book source) {
-        return BookOutputDto.builder()
-                .id(source.getId())
-                .title(source.getTitle())
-                .author(source.getAuthor())
-                .publisher(source.getPublisher())
-                .yearPublished(source.getYearPublished())
-                .build();
+        var result = new BookOutputDto(
+            source.getId(),
+            source.getTitle(), 
+            source.getAuthorId(), 
+            source.getPublisherId());
+
+        result.setYearPublished(source.getYearPublished());
+
+        return result;
     }
 }

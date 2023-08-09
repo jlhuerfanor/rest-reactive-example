@@ -45,6 +45,10 @@
 			<artifactId>spring-boot-starter-validation</artifactId> 
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+    		<artifactId>spring-hateoas</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
@@ -148,14 +152,16 @@
                         <configuration>
                             <inputSpec>${project.build.directory}/contract/api-specs.yaml</inputSpec>
                             <configurationFile>${project.build.directory}/contract/generator-schema-config.yaml</configurationFile>
-                            <generatorName>java</generatorName>
+							<configOptions>
+								<hateoas>true</hateoas>
+							</configOptions>
+                            <generatorName>spring</generatorName>
                             <generateApis>false</generateApis>
                             <generateApiDocumentation>false</generateApiDocumentation>
                             <generateApiTests>false</generateApiTests>
                             <generateModelDocumentation>false</generateModelDocumentation>
                             <generateModelTests>false</generateModelTests>
                             <generateSupportingFiles>false</generateSupportingFiles>
-                            <templateDirectory>${project.build.directory}/contract/openapi-templates</templateDirectory>
                         </configuration>
                     </execution>
 					<execution>
@@ -167,6 +173,9 @@
                         <configuration>
                             <inputSpec>${project.build.directory}/contract/api-specs.yaml</inputSpec>
                             <configurationFile>${project.build.directory}/contract/generator-api-config.yaml</configurationFile>
+							<configOptions>
+								<hateoas>true</hateoas>
+							</configOptions>
                             <generatorName>spring</generatorName>
                             <generateApis>true</generateApis>
                             <generateApiDocumentation>false</generateApiDocumentation>
