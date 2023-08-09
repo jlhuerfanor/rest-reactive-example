@@ -2,6 +2,8 @@ package com.endava.workshops.restexample.application.service;
 
 import java.util.function.Predicate;
 
+import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
+import com.endava.workshops.restexample.application.model.Book;
 import org.springframework.stereotype.Service;
 
 import com.endava.workshops.restexample.application.adapter.secondary.AuthorRepository;
@@ -14,9 +16,13 @@ import reactor.core.publisher.Mono;
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
+    private final BookByCriteriaQuery bookByCriteriaQuery;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(
+            AuthorRepository authorRepository,
+            BookByCriteriaQuery bookByCriteriaQuery) {
         this.authorRepository = authorRepository;
+        this.bookByCriteriaQuery = bookByCriteriaQuery;
     }
 
     public Mono<Author> add(Author author) {
@@ -31,5 +37,13 @@ public class AuthorService {
 
     public Flux<Author> getAll() {
         return authorRepository.findAll();
+    }
+
+    public Flux<Book> getBooks(String authorId) {
+        return bookByCriteriaQuery.findAllByAuthorId(authorId);
+    }
+
+    public Mono<Author> getById(String authorId) {
+        return authorRepository.findById(authorId);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
@@ -21,6 +22,24 @@ public class MongoBookByCriteriaQuery implements BookByCriteriaQuery {
 
     public MongoBookByCriteriaQuery(ReactiveMongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
+    }
+
+    @Override
+    public Flux<Book> findAllByAuthorId(String authorId) {
+        var query = new Query();
+
+        query.addCriteria(Criteria.where("authorId").is(authorId));
+
+        return mongoTemplate.find(query, Book.class);
+    }
+
+    @Override
+    public Flux<Book> findAllByPublisherId(String publisherId) {
+        var query = new Query();
+
+        query.addCriteria(Criteria.where("publisherId").is(publisherId));
+
+        return mongoTemplate.find(query, Book.class);
     }
 
     @Override

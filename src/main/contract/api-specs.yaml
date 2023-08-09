@@ -21,7 +21,9 @@ paths:
       description: Register a publisher info.
       tags:
         - publisher-management
+      operationId: createPublisher
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -43,6 +45,7 @@ paths:
       description: Get an array of registered publishers.
       tags:
         - publisher-management
+      operationId: getPublishers
       responses:
         '200':    # status code
           description: Returns a list of registered publishers.
@@ -65,6 +68,7 @@ paths:
       description: Get publisher info by ID.
       tags:
         - publisher-management
+      operationId: getPublisherById
       responses:
         '200':    # status code
           description: A JSON representation of the publisher info.
@@ -85,6 +89,7 @@ paths:
       description: Get books of a given publisher.
       tags:
         - publisher-management
+      operationId: getPublisherBooks
       responses:
         '200':    # status code
           description: A JSON representation of the publisher info.
@@ -93,7 +98,7 @@ paths:
               schema: 
                 type: array
                 items:
-                  $ref: '#/components/schemas/PublisherOutput'
+                  $ref: '#/components/schemas/BookOutput'
   # Authors    --------------------------------------------
   /author:
     post:
@@ -101,7 +106,9 @@ paths:
       description: Register an author info.
       tags:
         - author-management
+      operationId: createAuthor
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -123,6 +130,7 @@ paths:
       description: Get an array of registered authors.
       tags:
         - author-management
+      operationId: getAuthors
       responses:
         '200':    # status code
           description: Returns a list of registered authors.
@@ -145,6 +153,7 @@ paths:
       description: Get author info by ID.
       tags:
         - author-management
+      operationId: getAuthorById
       responses:
         '200':    # status code
           description: A JSON representation of the author info.
@@ -165,6 +174,7 @@ paths:
       description: Get books of a given author.
       tags:
         - author-management
+      operationId: getAuthorBooks
       responses:
         '200':    # status code
           description: A JSON representation of the author s book.
@@ -173,7 +183,7 @@ paths:
               schema: 
                 type: array
                 items:
-                  $ref: '#/components/schemas/AuthorOutput'
+                  $ref: '#/components/schemas/BookOutput'
   # Books      --------------------------------------------
   /books:
     post:
@@ -181,7 +191,9 @@ paths:
       description: Register a new book in the library.
       tags:
         - book-management
+      operationId: create
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -203,6 +215,7 @@ paths:
       description: Get an array of book that match the criteria.
       tags:
         - book-management
+      operationId: getBooksByCriteria
       parameters:
         - in: query
           name: queryParams
@@ -232,6 +245,7 @@ paths:
       description: Get book by ID.
       tags:
         - book-management
+      operationId: getBookById
       responses:
         '200':    # status code
           description: A JSON representation of a book.
@@ -244,7 +258,9 @@ paths:
       description: Update an existing book.
       tags:
         - book-management
+      operationId: updateOrCreateBook
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -268,6 +284,7 @@ paths:
       description: Delete an existing book.
       tags:
         - book-management
+      operationId: deleteBook
       responses:
         '204':    # status code
           description: The book gets deleted from the repository.
@@ -286,6 +303,7 @@ paths:
       description: Get author info.
       tags:
         - book-management
+      operationId: getBookAuthor
       responses:
         '200':    # status code
           description: A JSON representation of a book.
@@ -306,6 +324,7 @@ paths:
       description: Get publisher info.
       tags:
         - book-management
+      operationId: getBookPublisher
       responses:
         '200':    # status code
           description: A JSON representation of a publisher.

@@ -20,7 +20,4 @@ public class Author {
     private String name;
     private String country;
     private String email;
-
-    @DocumentReference(lazy = true)
-    private List<Book> books;
 }

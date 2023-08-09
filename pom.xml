@@ -9,6 +9,10 @@
 	<name>rest-reactive-example</name>
 	<description>Demo project for reactive REST with Spring Boot.</description>
 	<properties>
+		<flyway.user>jhuerfano</flyway.user>
+		<flyway.password>AVkk3M7%d2</flyway.password>
+		<application.user>jhuerfano</application.user>
+		<application.password>AVkk3M7%d2</application.password>
 		<maven.compiler.target>17</maven.compiler.target>
     	<maven.compiler.source>17</maven.compiler.source>
 		<adapter.primary.package>com.endava.workshops.restexample.application.adapter.primary</adapter.primary.package>

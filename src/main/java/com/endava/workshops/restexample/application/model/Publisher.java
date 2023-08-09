@@ -20,7 +20,4 @@ public class Publisher {
     private String name;
     private boolean active;
     private String website;
-
-    @DocumentReference(lazy = true)
-    private List<Book> books;
 }
