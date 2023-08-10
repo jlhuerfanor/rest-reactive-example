@@ -1,19 +1,17 @@
 package com.endava.workshops.restexample.application.adapter.secondary.mongo;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
+import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
+import com.endava.workshops.restexample.application.model.Book;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
-
-import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
-import com.endava.workshops.restexample.application.model.Book;
-
 import reactor.core.publisher.Flux;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 @Component
 public class MongoBookByCriteriaQuery implements BookByCriteriaQuery {

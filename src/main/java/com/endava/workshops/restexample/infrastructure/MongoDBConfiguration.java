@@ -1,17 +1,16 @@
 package com.endava.workshops.restexample.infrastructure;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
-import com.mongodb.reactivestreams.client.MongoClient;
-import com.mongodb.reactivestreams.client.MongoClients;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableReactiveMongoRepositories("com.endava.workshops.restexample.application.adapter.secondary.mongo")

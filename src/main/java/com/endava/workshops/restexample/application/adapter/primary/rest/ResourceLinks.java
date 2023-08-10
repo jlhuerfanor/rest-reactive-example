@@ -6,15 +6,12 @@ import com.endava.workshops.restexample.application.adapter.primary.model.Publis
 import com.endava.workshops.restexample.application.adapter.primary.rest.api.AuthorManagementApi;
 import com.endava.workshops.restexample.application.adapter.primary.rest.api.BookManagementApi;
 import com.endava.workshops.restexample.application.adapter.primary.rest.api.PublisherManagementApi;
-import org.reactivestreams.Publisher;
 import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
-
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.*;
+import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
 
 public final class ResourceLinks {
 

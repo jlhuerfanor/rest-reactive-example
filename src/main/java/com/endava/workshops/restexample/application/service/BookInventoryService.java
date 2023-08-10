@@ -1,17 +1,15 @@
 package com.endava.workshops.restexample.application.service;
 
-import java.util.function.Predicate;
-
-import org.springframework.stereotype.Service;
-
 import com.endava.workshops.restexample.application.adapter.secondary.BookByCriteriaQuery;
 import com.endava.workshops.restexample.application.adapter.secondary.BookRepository;
 import com.endava.workshops.restexample.application.exceptions.InvalidInputException;
 import com.endava.workshops.restexample.application.model.Book;
 import com.endava.workshops.restexample.application.model.BookQueryCriteria;
-
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.function.Predicate;
 
 @Service
 public class BookInventoryService {

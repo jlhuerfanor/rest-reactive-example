@@ -1,7 +1,6 @@
 package com.endava.workshops.restexample.application.adapter.secondary;
 
 import com.endava.workshops.restexample.application.model.Publisher;
-
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
