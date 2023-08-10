@@ -82,7 +82,8 @@ public class BookManagementController implements BookManagementApi {
         return Mono.just(queryParams)
                 .map(value -> conversionService.convert(value, BookQueryCriteria.class))
                 .map(value -> bookService.find(value)
-                        .map(book -> conversionService.convert(book, BookOutputDto.class)))
+                        .map(book -> conversionService.convert(book, BookOutputDto.class))
+                        .flatMap(book -> ResourceLinks.addBookResources(book, exchange)))
                 .map(ResponseEntity::ok);
     }
 
