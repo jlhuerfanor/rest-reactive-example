@@ -5,14 +5,16 @@ import com.endava.workshops.restexample.application.adapter.secondary.BookByCrit
 import com.endava.workshops.restexample.application.exceptions.InvalidInputException;
 import com.endava.workshops.restexample.application.model.Author;
 import com.endava.workshops.restexample.application.model.Book;
+import org.hglteam.validation.reactive.ValidationError;
+import org.hglteam.validation.reactive.Validations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Predicate;
-
 @Service
 public class AuthorService {
+    public static final String ERROR_NAME_ALREADY_EXISTS = "Name already exists";
+
     private final AuthorRepository authorRepository;
     private final BookByCriteriaQuery bookByCriteriaQuery;
 
@@ -24,13 +26,13 @@ public class AuthorService {
     }
 
     public Mono<Author> add(Author author) {
-        return Mono.just(author)
-                .flatMap(value -> authorRepository.existsByName(value.getName())
-                        .filter(Predicate.isEqual(Boolean.FALSE))
-                        .map(any -> value)
-                        .switchIfEmpty(Mono.error(new InvalidInputException("Name already exists"))))
-                .flatMap(authorRepository::save)
-                .switchIfEmpty(Mono.<Author>empty());
+        return Validations.<Author>builder()
+                .onProperty(Author::getName, name -> name
+                        .when(authorRepository::existsByName)
+                        .then(ValidationError.withMessage(
+                                InvalidInputException::new, ERROR_NAME_ALREADY_EXISTS)))
+                .validate(author)
+                .flatMap(authorRepository::save);
     }
 
     public Flux<Author> getAll() {

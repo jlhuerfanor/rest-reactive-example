@@ -5,16 +5,19 @@ import com.endava.workshops.restexample.application.adapter.secondary.BookReposi
 import com.endava.workshops.restexample.application.exceptions.InvalidInputException;
 import com.endava.workshops.restexample.application.model.Book;
 import com.endava.workshops.restexample.application.model.BookQueryCriteria;
+import org.hglteam.validation.reactive.ValidationError;
+import org.hglteam.validation.reactive.Validations;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Predicate;
+import java.util.Objects;
 
 @Service
 public class BookInventoryService {
-    public static final String ERROR_ID_SHOULD_NOT_BE_PROVIDED = "ID shoud not be provided!";
-    
+    public static final String ERROR_ID_SHOULD_NOT_BE_PROVIDED = "ID should not be provided!";
+    public static final String ERROR_NAME_ALREADY_EXISTS = "Name already exists";
+
     private final BookRepository repository;
     private final BookByCriteriaQuery bookByCriteriaQuery;
 
@@ -24,34 +27,32 @@ public class BookInventoryService {
     }
 
     public Mono<Book> add(Book book) {
-        return Mono.just(book)
-            .flatMap(value -> repository.existsByTitle(value.getTitle())
-                    .filter(Predicate.isEqual(Boolean.FALSE))
-                    .map(any -> value)
-                    .switchIfEmpty(Mono.error(new InvalidInputException("Name already exists"))))
-            .flatMap(repository::save);
+        return Validations.<Book>builder()
+                .whenValue(value -> Objects.nonNull(value.getId()))
+                .then(ValidationError.withMessage(InvalidInputException::new, ERROR_ID_SHOULD_NOT_BE_PROVIDED))
+                .onProperty(Book::getTitle, title -> title
+                        .when(repository::existsByTitle)
+                        .then(ValidationError.withMessage(InvalidInputException::new, ERROR_NAME_ALREADY_EXISTS)))
+                .validate(book)
+                .flatMap(repository::save);
     }
 
     public Mono<Book> getById(String id) {
-        return Mono.just(id)
-                .flatMap(repository::findById);
+        return repository.findById(id);
     }
 
     public Mono<Book> update(Book input) {
-        return Mono.just(input.getId())
-                .flatMap(repository::existsById)
-                .filter(existsById -> !existsById)
-                .flatMap(unused -> this.add(input))
-                .switchIfEmpty(Mono.just(input)
-                        .flatMap(repository::save)
-                        .then(Mono.empty()));
+        return repository.existsById(input.getId())
+                .flatMap(result -> result
+                        ? repository.save(input).then(Mono.empty())
+                        : this.add(input.toBuilder().id(null).build()));
     }
 
     public Mono<Book> delete(String id) {
         return repository.findById(id)
                 .flatMap(book -> Mono.just(book)
-                    .flatMap(repository::delete)
-                    .thenReturn(book));
+                        .flatMap(repository::delete)
+                        .thenReturn(book));
     }
 
     public Flux<Book> find(BookQueryCriteria criteria) {
