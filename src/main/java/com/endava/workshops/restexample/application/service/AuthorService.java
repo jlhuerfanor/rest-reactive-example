@@ -29,8 +29,7 @@ public class AuthorService {
         return Validations.<Author>builder()
                 .onProperty(Author::getName, name -> name
                         .when(authorRepository::existsByName)
-                        .then(ValidationError.withMessage(
-                                InvalidInputException::new, ERROR_NAME_ALREADY_EXISTS)))
+                        .then(ValidationError.withMessage(InvalidInputException::new, ERROR_NAME_ALREADY_EXISTS)))
                 .validate(author)
                 .flatMap(authorRepository::save);
     }
